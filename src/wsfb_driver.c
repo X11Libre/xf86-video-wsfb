@@ -440,8 +440,18 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 	/* Handle depth */
 	default_depth = fPtr->info.depth <= 24 ? fPtr->info.depth : 24;
 	if (!xf86SetDepthBpp(pScrn, default_depth, default_depth,
-			     fPtr->info.depth, Support24bppFb|Support32bppFb))
+		fPtr->info.depth,
+		fPtr->info.depth >= 24 ? Support24bppFb|Support32bppFb : 0))
 		return FALSE;
+
+	/* Check consistency */
+	if (pScrn->bitsPerPixel != fPtr->info.depth) {
+		xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
+		    "specified depth (%d) or bpp (%d) doesn't match "
+		    "framebuffer depth (%d)\n", pScrn->depth, 
+		    pScrn->bitsPerPixel, fPtr->info.depth);
+		return FALSE;
+	}
 	xf86PrintDepthBpp(pScrn);
 
 	/* Get the depth24 pixmap format */
@@ -502,7 +512,7 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 	xf86ProcessOptions(pScrn->scrnIndex, fPtr->pEnt->device->options,
 			   fPtr->Options);
 
-	/* use shadow framebuffer by default, on dpeth >= 8 */
+	/* use shadow framebuffer by default, on depth >= 8 */
 	if (pScrn->depth >= 8)
 		fPtr->shadowFB = xf86ReturnOptValBool(fPtr->Options,
 						      OPTION_SHADOW_FB, TRUE);
