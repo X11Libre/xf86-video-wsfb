@@ -33,7 +33,7 @@
  * Based on fbdev.c written by:
  *
  * Authors:  Alan Hourihane, <alanh@fairlite.demon.co.uk>
- *	     Michel Dänzer, <michdaen@iiic.ethz.ch>
+ *	     Michel DÃ¤nzer, <michdaen@iiic.ethz.ch>
  */
 
 #include <fcntl.h>
