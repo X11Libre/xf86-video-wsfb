@@ -59,7 +59,7 @@ is available on OpenBSD.
 Currently this includes OpenBSD/macppc, OpenBSD/sparc, OpenBSD/sparc64
 and OpenBSD/alpha on TGA graphics cards.
 .SH CONFIGURATION DETAILS
-Please refer to XF86Config(__filemansuffix__) for general configuration
+Please refer to __xconfigfile__(__filemansuffix__) for general configuration
 details.
 This section only covers configuration details specific to this driver.
 .PP
@@ -87,7 +87,7 @@ Default: on for depths were it is supported, off otherwise.
 .br
 ShadowFB is currently not supported on monochrome displays.
 .SH "SEE ALSO"
-XFree86(1), XF86Config(__filemansuffix__), xf86config(1), Xserver(1),
+XFree86(1), __xconfigfile__(__filemansuffix__), xorgconfig(1), Xserver(1),
 X(__miscmansuffix__), fbdev(__drivermansuffix__)
 .SH AUTHORS
 Authors include: Matthieu Herrb, Gerd Knorr, Michel Dänzer, Geert Uytterhoeven
