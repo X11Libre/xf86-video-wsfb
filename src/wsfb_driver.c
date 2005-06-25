@@ -140,7 +140,7 @@ static int pix24bpp = 0;
 #define WSFB_MAJOR_VERSION	0
 #define WSFB_MINOR_VERSION	1
 
-DriverRec WSFB = {
+_X_EXPORT DriverRec WSFB = {
 	VERSION,
 	WSFB_DRIVER_NAME,
 	WsfbIdentify,
@@ -193,7 +193,7 @@ static XF86ModuleVersionInfo WsfbVersRec = {
 	{0, 0, 0, 0}
 };
 
-XF86ModuleData wsfbModuleData = { &WsfbVersRec, WsfbSetup, NULL };
+_X_EXPORT XF86ModuleData wsfbModuleData = { &WsfbVersRec, WsfbSetup, NULL };
 
 static pointer
 WsfbSetup(pointer module, pointer opts, int *errmaj, int *errmin)
