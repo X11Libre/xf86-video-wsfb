@@ -36,6 +36,10 @@
  *	     Michel Dänzer, <michdaen@iiic.ethz.ch>
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/time.h>
