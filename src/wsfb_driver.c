@@ -177,7 +177,6 @@ static const char *fbSymbols[] = {
 	NULL
 };
 static const char *shadowSymbols[] = {
-	"shadowAlloc",
 	"shadowInit",
 	"shadowUpdatePacked",
 	NULL
@@ -236,7 +235,6 @@ typedef struct {
 	unsigned char*		fbstart;
 	unsigned char*		fbmem;
 	size_t			fbmem_len;
-	unsigned char*		shadowmem;
 	Bool			shadowFB;
 	CloseScreenProcPtr	CloseScreen;
 	EntityInfoPtr		pEnt;
@@ -682,17 +680,8 @@ WsfbScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 	height = pScrn->virtualY;
 	width = pScrn->virtualX;
 
-	/* shadowfb */
-	if (fPtr->shadowFB) {
-		if ((fPtr->shadowmem = shadowAlloc(width, height,
-						   pScrn->bitsPerPixel)) == NULL)
-		return FALSE;
+	fPtr->fbstart   = fPtr->fbmem;
 
-		fPtr->fbstart   = fPtr->shadowmem;
-	} else {
-		fPtr->shadowmem = NULL;
-		fPtr->fbstart   = fPtr->fbmem;
-	}
 	switch (pScrn->bitsPerPixel) {
 	case 1:
 		ret = xf1bppScreenInit(pScreen, fPtr->fbstart,
@@ -813,8 +802,6 @@ WsfbCloseScreen(int scrnIndex, ScreenPtr pScreen)
 
 		fPtr->fbmem = NULL;
 	}
-	if (fPtr->shadowmem)
-		xfree(fPtr->shadowmem);
 #ifdef XFreeXDGA
 	if (fPtr->pDGAMode) {
 		xfree(fPtr->pDGAMode);
