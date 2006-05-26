@@ -42,7 +42,8 @@ wsfb \- video driver for wsdisplay framebuffer device
 .fi
 .SH DESCRIPTION
 .B wsfb
-is an XFree86 driver for the OpenBSD wsdisplay framebuffer devices.
+is an __xservername__ driver for OpenBSD and NetBSD
+wsdisplay framebuffer devices.
 This is a non-accelerated driver. 
 The following framebuffer depths are supported: 1, 8, 16 and 24, given
 that the wsdisplay device underneath supports them.
@@ -58,6 +59,7 @@ driver supports all hardware where a wsdisplay framebuffer driver
 is available on OpenBSD.
 Currently this includes OpenBSD/macppc, OpenBSD/sparc, OpenBSD/sparc64
 and OpenBSD/alpha on TGA graphics cards.
+.\" It also supports NetBSD/i386 using wsdisplay on vesafb.
 .SH CONFIGURATION DETAILS
 Please refer to __xconfigfile__(__filemansuffix__) for general configuration
 details.
@@ -78,7 +80,8 @@ section:
 .TP
 .BI "Option \*qdevice\*q \*q" string \*q
 The wsdisplay framebuffer device to use.
-Default: \fI/dev/ttyC0\fP.
+Default for OpenBSD: \fI/dev/ttyC0\fP.
+Default for NetBSD: \fI/dev/ttyE0\fP.
 .TP
 .BI "Option \*qShadowFB\*q \*q" boolean \*q
 Enable or disable use of the shadow framebuffer layer.
