@@ -1,0 +1,6 @@
+2006-05-26  Jeremy C. Reed  <reed@reedmedia.net>
+
+	* src/wsfb_driver.c:
+	NetBSD uses /dev/ttyE?. (Already that way in
+	xserver/xorg/hw/xfree86/os-support/bsd/bsd_init.c.)
+

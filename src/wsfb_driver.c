@@ -82,7 +82,11 @@ extern int priv_open_device(const char *);
 #define priv_open_device(n)    open(n,O_RDWR|O_NONBLOCK|O_EXCL)
 #endif
 
+#if defined(__NetBSD__)
+#define WSFB_DEFAULT_DEV "/dev/ttyE0"
+#else
 #define WSFB_DEFAULT_DEV "/dev/ttyC0"
+#endif
 
 #define DEBUG 0
 
