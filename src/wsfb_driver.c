@@ -142,14 +142,14 @@ static pointer wsfb_mmap(size_t, off_t, int);
  */
 static int pix24bpp = 0;
 
-#define VERSION			4000
+#define WSFB_VERSION		4000
 #define WSFB_NAME		"wsfb"
 #define WSFB_DRIVER_NAME	"wsfb"
 #define WSFB_MAJOR_VERSION	0
 #define WSFB_MINOR_VERSION	1
 
 _X_EXPORT DriverRec WSFB = {
-	VERSION,
+	WSFB_VERSION,
 	WSFB_DRIVER_NAME,
 	WsfbIdentify,
 	WsfbProbe,
