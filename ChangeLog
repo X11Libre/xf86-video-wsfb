@@ -1,3 +1,8 @@
+2006-05-31  Matthieu Herrb <matthieu.herrb@laas.fr>
+
+	* src/wsfb_driver.c:
+	Fix for dlopen() -based  module loader. 
+
 2006-05-27  Jeremy C. Reed  <reed@reedmedia.net>
 
 	* Makefile.am:

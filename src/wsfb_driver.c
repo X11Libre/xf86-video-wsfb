@@ -182,7 +182,7 @@ static const char *fbSymbols[] = {
 };
 static const char *shadowSymbols[] = {
 	"shadowInit",
-	"shadowUpdatePacked",
+	"shadowUpdatePackedWeak",
 	NULL
 };
 
@@ -743,7 +743,7 @@ WsfbScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 			xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
 				   "Shadow FB not available on < 8 depth");
 		} else {
-			if (!shadowInit(pScreen, shadowUpdatePacked,
+			if (!shadowInit(pScreen, shadowUpdatePackedWeak(),
 					WsfbWindowLinear))
 			return FALSE;
 		}
