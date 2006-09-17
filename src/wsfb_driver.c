@@ -131,6 +131,8 @@ static Bool WsfbDGASetMode(ScrnInfoPtr, DGAModePtr);
 static void WsfbDGASetViewport(ScrnInfoPtr, int, int, int);
 static Bool WsfbDGAInit(ScrnInfoPtr, ScreenPtr);
 #endif
+static Bool WsfbDriverFunc(ScrnInfoPtr pScrn, xorgDriverFuncOp op,
+				pointer ptr);
 
 /* helper functions */
 static int wsfb_open(char *);
@@ -155,7 +157,8 @@ _X_EXPORT DriverRec WSFB = {
 	WsfbProbe,
 	WsfbAvailableOptions,
 	NULL,
-	0
+	0,
+	WsfbDriverFunc
 };
 
 /* Supported "chipsets" */
@@ -220,7 +223,7 @@ WsfbSetup(pointer module, pointer opts, int *errmaj, int *errmin)
 	}
 	if (!setupDone) {
 		setupDone = TRUE;
-		xf86AddDriver(&WSFB, module, 0);
+		xf86AddDriver(&WSFB, module, HaveDriverFuncs);
 		LoaderRefSymLists(fbSymbols, shadowSymbols, NULL);
 		return (pointer)1;
 	} else {
@@ -1146,3 +1149,20 @@ WsfbDGAInit(ScrnInfoPtr pScrn, ScreenPtr pScreen)
 			fPtr->pDGAMode, fPtr->nDGAMode));
 }
 #endif
+
+static Bool
+WsfbDriverFunc(ScrnInfoPtr pScrn, xorgDriverFuncOp op,
+    pointer ptr)
+{
+	xorgHWFlags *flag;
+	
+	switch (op) {
+	case GET_REQUIRED_HW_INTERFACES:
+		flag = (CARD32*)ptr;
+		(*flag) = 0;
+		return TRUE;
+	default:
+		return FALSE;
+	}
+}
+
