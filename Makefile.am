@@ -20,3 +20,12 @@
 
 AUTOMAKE_OPTIONS = foreign
 SUBDIRS = src man
+
+.PHONY: ChangeLog
+
+ChangeLog:
+	git-log > ChangeLog
+
+dist-hook: ChangeLog
+
+CLEANFILES= ChangeLog
