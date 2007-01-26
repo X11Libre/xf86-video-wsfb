@@ -820,6 +820,17 @@ WsfbScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 
 	fPtr->fbstart = fPtr->fbmem;
 
+	if (fPtr->shadowFB) {
+	    fPtr->shadow = xcalloc(1, pScrn->virtualX * pScrn->virtualY *
+				   pScrn->bitsPerPixel);
+
+	    if (!fPtr->shadow) {
+		xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
+			   "Failed to allocate shadow framebuffer\n");
+		return FALSE;
+	    }
+	}
+	
 	switch (pScrn->bitsPerPixel) {
 	case 1:
 		ret = xf1bppScreenInit(pScreen, fPtr->fbstart,
