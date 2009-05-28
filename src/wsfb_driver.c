@@ -183,22 +183,6 @@ static const OptionInfoRec WsfbOptions[] = {
 	{ -1, NULL, OPTV_NONE, {0}, FALSE}
 };
 
-/* Symbols needed from other modules */
-static const char *fbSymbols[] = {
-	"fbPictureInit",
-	"fbScreenInit",
-	NULL
-};
-static const char *shadowSymbols[] = {
-	"shadowAdd",
-	"shadowSetup",
-	"shadowUpdatePacked",
-	"shadowUpdatePackedWeak",
-	"shadowUpdateRotatePacked",
-	"shadowUpdateRotatePackedWeak",
-	NULL
-};
-
 #ifdef XFree86LOADER
 static XF86ModuleVersionInfo WsfbVersRec = {
 	"wsfb",
@@ -236,7 +220,6 @@ WsfbSetup(pointer module, pointer opts, int *errmaj, int *errmin)
 	if (!setupDone) {
 		setupDone = TRUE;
 		xf86AddDriver(&WSFB, module, HaveDriverFuncs);
-		LoaderRefSymLists(fbSymbols, shadowSymbols, NULL);
 		return (pointer)1;
 	} else {
 		if (errmaj != NULL)
@@ -667,18 +650,10 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 			WsfbFreeRec(pScrn);
 			return FALSE;
 		}
-		xf86LoaderReqSymLists(shadowSymbols, NULL);
 	}
 	if (mod && xf86LoadSubModule(pScrn, mod) == NULL) {
 		WsfbFreeRec(pScrn);
 		return FALSE;
-	}
-	if (mod) {
-		if (reqSym) {
-			xf86LoaderReqSymbols(reqSym, NULL);
-		} else {
-			xf86LoaderReqSymLists(fbSymbols, NULL);
-		}
 	}
 	TRACE_EXIT("PreInit");
 	return TRUE;
