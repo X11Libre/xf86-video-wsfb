@@ -1,4 +1,4 @@
-/* $OpenBSD: wsfb_driver.c,v 1.14 2008/09/29 22:04:43 matthieu Exp $ */
+/* $OpenBSD: wsfb_driver.c,v 1.15 2009/06/01 20:57:20 matthieu Exp $ */
 /*
  * Copyright (c) 2001 Matthieu Herrb
  * All rights reserved.
@@ -68,8 +68,10 @@
 #endif
 #include "fb.h"
 
+#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 6
 #include "xf86Resources.h"
 #include "xf86RAC.h"
+#endif
 
 #ifdef XvExtension
 #include "xf86xv.h"
@@ -416,8 +418,10 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 
 	fPtr->pEnt = xf86GetEntityInfo(pScrn->entityList[0]);
 
+#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 6
 	pScrn->racMemFlags = RAC_FB | RAC_COLORMAP | RAC_CURSOR | RAC_VIEWPORT;
 	pScrn->racIoFlags = pScrn->racMemFlags;
+#endif
 
 	dev = xf86FindOptionValue(fPtr->pEnt->device->options, "device");
 	fPtr->fd = wsfb_open(dev);
