@@ -28,4 +28,3 @@ ChangeLog:
 
 dist-hook: ChangeLog
 
-CLEANFILES= ChangeLog
