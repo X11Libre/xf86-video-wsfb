@@ -61,7 +61,6 @@ AC_ARG_WITH(xorg-module-dir,
 
 # Checks for pkg-config packages
 PKG_CHECK_MODULES(XORG, [xorg-server >= 1.0.99.901 xproto $REQUIRED_MODULES])
-sdkdir=$(pkg-config --variable=sdkdir xorg-server)
 
 # Checks for libraries.
 
