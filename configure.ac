@@ -76,8 +76,9 @@ AC_SUBST([moduledir])
 DRIVER_NAME=wsfb
 AC_SUBST([DRIVER_NAME])
 
-AC_OUTPUT([
-	Makefile
-	src/Makefile
-	man/Makefile
+AC_CONFIG_FILES([
+                Makefile
+                src/Makefile
+                man/Makefile
 ])
+AC_OUTPUT
