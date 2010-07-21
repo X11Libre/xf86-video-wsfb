@@ -20,12 +20,12 @@
 #
 # Process this file with autoconf to produce a configure script
 
+# Initialize Autoconf
 AC_PREREQ([2.60])
 AC_INIT([xf86-video-wsfb],
         [0.3.0],
         [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],
         [xf86-video-wsfb])
-
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS([config.h])
 
@@ -37,32 +37,32 @@ XORG_DEFAULT_OPTIONS
 
 AC_CONFIG_AUX_DIR(.)
 
+# Initialize Automake
 AM_INIT_AUTOMAKE([foreign dist-bzip2])
-
 AM_MAINTAINER_MODE
 
-# Checks for programs.
+# Initialize libtool
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 
 AH_TOP([#include "xorg-server.h"])
 
+# Define a configure option for an alternate module directory
 AC_ARG_WITH(xorg-module-dir,
             AS_HELP_STRING([--with-xorg-module-dir=DIR],
                            [Default xorg module directory [[default=$libdir/xorg/modules]]]),
             [moduledir="$withval"],
             [moduledir="$libdir/xorg/modules"])
 
-# Checks for extensions
+# Store the list of server defined optional extensions in REQUIRED_MODULES
 #XORG_DRIVER_CHECK_EXT(RANDR, randrproto)
 #XORG_DRIVER_CHECK_EXT(RENDER, renderproto)
 #XORG_DRIVER_CHECK_EXT(XV, videoproto)
 
-# Checks for pkg-config packages
+# Obtain compiler/linker options for the driver dependencies
 PKG_CHECK_MODULES(XORG, [xorg-server >= 1.0.99.901 xproto $REQUIRED_MODULES])
 
 # Checks for libraries.
-
 
 # Check for xf1bpp & xf4bpp (removed in xorg-server 1.6 & later)
 SAVE_CPPFLAGS="$CPPFLAGS"
