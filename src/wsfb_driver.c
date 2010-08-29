@@ -804,7 +804,7 @@ WsfbScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 
 	if (fPtr->shadowFB) {
 		fPtr->shadow = xcalloc(1, pScrn->virtualX * pScrn->virtualY *
-		    pScrn->bitsPerPixel);
+		    pScrn->bitsPerPixel/8);
 		
 		if (!fPtr->shadow) {
 			xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
