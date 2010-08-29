@@ -819,7 +819,7 @@ WsfbScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 		ret = xf1bppScreenInit(pScreen, fPtr->fbstart,
 				       pScrn->virtualX, pScrn->virtualY,
 				       pScrn->xDpi, pScrn->yDpi,
-				       pScrn->displayWidth);
+				       fPtr->linebytes * 8);
 		break;
 #endif
 	case 4:
@@ -827,7 +827,7 @@ WsfbScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 		ret = xf4bppScreenInit(pScreen, fPtr->fbstart,
 				       pScrn->virtualX, pScrn->virtualY,
 				       pScrn->xDpi, pScrn->yDpi,
-				       pScrn->displayWidth);
+				       fPtr->linebytes * 2);
 		break;
 #endif
 	case 8:
