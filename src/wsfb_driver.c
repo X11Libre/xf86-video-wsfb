@@ -298,7 +298,7 @@ wsfb_open(char *dev)
 {
 	int fd = -1;
 
-	/* Try argument from XF86Config first. */
+	/* Try argument from xorg.conf first. */
 	if (dev == NULL || ((fd = priv_open_device(dev)) == -1)) {
 		/* Second: environment variable. */
 		dev = getenv("XDEVICE");
