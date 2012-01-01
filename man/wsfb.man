@@ -49,7 +49,7 @@ The following framebuffer depths are supported: 1, 8, 16 and 24, given
 that the wsdisplay device underneath supports them.
 .br
 A StaticGray monochrome visual is provided for depth 1,
-all visual types are supported for depth  8 and a TrueColor visual is
+all visual types are supported for depth 8 and a TrueColor visual is
 supported for the other depths.
 Multi-head configurations are supported.
 .SH SUPPORTED HARDWARE
