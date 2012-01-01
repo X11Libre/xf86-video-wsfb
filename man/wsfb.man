@@ -89,6 +89,13 @@ See shadowfb(__drivermansuffix__) for further information.
 Default: on for depths were it is supported, off otherwise.
 .br
 ShadowFB is currently not supported on monochrome displays.
+.TP
+.BI "Option \*qRotate\*q \*q" string \*q
+Enable rotation of the display. The supported values are "CW" (clockwise,
+90 degrees), "UD" (upside down, 180 degrees) and "CCW" (counter clockwise,
+270 degrees).
+Implies use of the shadow framebuffer layer.
+Default: off.
 .SH "SEE ALSO"
 __xservername__(1), __xconfigfile__(__filemansuffix__), Xserver(1),
 X(__miscmansuffix__), fbdev(__drivermansuffix__)
