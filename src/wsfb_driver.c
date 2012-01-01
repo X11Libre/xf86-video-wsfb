@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Matthieu Herrb
+ * Copyright © 2001-2012 Matthieu Herrb
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -144,7 +144,7 @@ enum { WSFB_ROTATE_NONE = 0,
 };
 
 /*
- * This is intentionally screen-independent. 
+ * This is intentionally screen-independent.
  * It indicates the binding choice made in the first PreInit.
  */
 static int pix24bpp = 0;
@@ -188,8 +188,8 @@ static XF86ModuleVersionInfo WsfbVersRec = {
 	MODINFOSTRING1,
 	MODINFOSTRING2,
 	XORG_VERSION_CURRENT,
-	PACKAGE_VERSION_MAJOR, 
-	PACKAGE_VERSION_MINOR, 
+	PACKAGE_VERSION_MAJOR,
+	PACKAGE_VERSION_MINOR,
 	PACKAGE_VERSION_PATCHLEVEL,
 	ABI_CLASS_VIDEODRV,
 	ABI_VIDEODRV_VERSION,
@@ -483,7 +483,7 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 	if (pScrn->bitsPerPixel != fPtr->info.depth) {
 		xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
 		    "specified depth (%d) or bpp (%d) doesn't match "
-		    "framebuffer depth (%d)\n", pScrn->depth, 
+		    "framebuffer depth (%d)\n", pScrn->depth,
 		    pScrn->bitsPerPixel, fPtr->info.depth);
 		return FALSE;
 	}
@@ -590,7 +590,7 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 			    "Option \"Rotate\" ignored on depth < 8");
 		}
 	}
-	
+
 	/* Fake video mode struct. */
 	mode = (DisplayModePtr)malloc(sizeof(DisplayModeRec));
 	mode->prev = mode;
@@ -785,7 +785,7 @@ WsfbScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 	if (!miSetPixmapDepths())
 		return FALSE;
 
-	if (fPtr->rotate == WSFB_ROTATE_CW 
+	if (fPtr->rotate == WSFB_ROTATE_CW
 	    || fPtr->rotate == WSFB_ROTATE_CCW) {
 		int tmp = pScrn->virtualX;
 		pScrn->virtualX = pScrn->displayWidth = pScrn->virtualY;
@@ -801,7 +801,7 @@ WsfbScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 	if (fPtr->shadowFB) {
 		fPtr->shadow = calloc(1, pScrn->virtualX * pScrn->virtualY *
 		    pScrn->bitsPerPixel/8);
-		
+
 		if (!fPtr->shadow) {
 			xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
 			    "Failed to allocate shadow framebuffer\n");
@@ -872,9 +872,9 @@ WsfbScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 	}
 
 #ifdef XFreeXDGA
-	if (!fPtr->rotate) 
+	if (!fPtr->rotate)
 		WsfbDGAInit(pScrn, pScreen);
-	else 
+	else
 		xf86DrvMsg(scrnIndex, X_INFO, "Rotated display, "
 		    "disabling DGA\n");
 #endif
@@ -882,8 +882,8 @@ WsfbScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 		xf86DrvMsg(scrnIndex, X_INFO, "Enabling Driver Rotation, "
 		    "disabling RandR\n");
 		xf86DisableRandR();
-		if (pScrn->bitsPerPixel == 24) 
-			xf86DrvMsg(scrnIndex, X_WARNING, 
+		if (pScrn->bitsPerPixel == 24)
+			xf86DrvMsg(scrnIndex, X_WARNING,
 			    "Rotation might be broken in 24 bpp\n");
 	}
 
@@ -1347,7 +1347,7 @@ WsfbDriverFunc(ScrnInfoPtr pScrn, xorgDriverFuncOp op,
     pointer ptr)
 {
 	xorgHWFlags *flag;
-	
+
 	switch (op) {
 	case GET_REQUIRED_HW_INTERFACES:
 		flag = (CARD32*)ptr;
