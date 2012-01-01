@@ -271,7 +271,7 @@ WsfbFreeRec(ScrnInfoPtr pScrn)
 
 	if (pScrn->driverPrivate == NULL)
 		return;
-	xfree(pScrn->driverPrivate);
+	free(pScrn->driverPrivate);
 	pScrn->driverPrivate = NULL;
 }
 
@@ -385,7 +385,7 @@ WsfbProbe(DriverPtr drv, int flags)
 			}
 		}
 	}
-	xfree(devSections);
+	free(devSections);
 	TRACE("probe done");
 	return foundScreen;
 }
@@ -448,27 +448,27 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 	 */
 	if (fPtr->info.cmsize != 0) {
 		fPtr->saved_cmap.red =
-		    (unsigned char *)xalloc(fPtr->info.cmsize);
+		    (unsigned char *)malloc(fPtr->info.cmsize);
 		if (fPtr->saved_cmap.red == NULL) {
 			xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
 			    "Cannot malloc %d bytes\n", fPtr->info.cmsize);
 			return FALSE;
 		}
 		fPtr->saved_cmap.green =
-		    (unsigned char *)xalloc(fPtr->info.cmsize);
+		    (unsigned char *)malloc(fPtr->info.cmsize);
 		if (fPtr->saved_cmap.green == NULL) {
 			xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
 			    "Cannot malloc %d bytes\n", fPtr->info.cmsize);
-			xfree(fPtr->saved_cmap.red);
+			free(fPtr->saved_cmap.red);
 			return FALSE;
 		}
 		fPtr->saved_cmap.blue =
-		    (unsigned char *)xalloc(fPtr->info.cmsize);
+		    (unsigned char *)malloc(fPtr->info.cmsize);
 		if (fPtr->saved_cmap.blue == NULL) {
 			xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
 			    "Cannot malloc %d bytes\n", fPtr->info.cmsize);
-			xfree(fPtr->saved_cmap.red);
-			xfree(fPtr->saved_cmap.green);
+			free(fPtr->saved_cmap.red);
+			free(fPtr->saved_cmap.green);
 			return FALSE;
 		}
 	}
@@ -541,7 +541,8 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 
 	/* Handle options. */
 	xf86CollectOptions(pScrn, NULL);
-	if (!(fPtr->Options = xalloc(sizeof(WsfbOptions))))
+	fPtr->Options = (OptionInfoRec *)malloc(sizeof(WsfbOptions));
+	if (fPtr->Options == NULL)
 		return FALSE;
 	memcpy(fPtr->Options, WsfbOptions, sizeof(WsfbOptions));
 	xf86ProcessOptions(pScrn->scrnIndex, fPtr->pEnt->device->options,
@@ -592,7 +593,7 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 	}
 	
 	/* Fake video mode struct. */
-	mode = (DisplayModePtr)xalloc(sizeof(DisplayModeRec));
+	mode = (DisplayModePtr)malloc(sizeof(DisplayModeRec));
 	mode->prev = mode;
 	mode->next = mode;
 	mode->name = "wsfb current mode";
@@ -799,7 +800,7 @@ WsfbScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 	fPtr->fbstart = fPtr->fbmem;
 
 	if (fPtr->shadowFB) {
-		fPtr->shadow = xcalloc(1, pScrn->virtualX * pScrn->virtualY *
+		fPtr->shadow = calloc(1, pScrn->virtualX * pScrn->virtualY *
 		    pScrn->bitsPerPixel/8);
 		
 		if (!fPtr->shadow) {
@@ -959,7 +960,7 @@ WsfbCloseScreen(int scrnIndex, ScreenPtr pScreen)
 	}
 #ifdef XFreeXDGA
 	if (fPtr->pDGAMode) {
-		xfree(fPtr->pDGAMode);
+		free(fPtr->pDGAMode);
 		fPtr->pDGAMode = NULL;
 		fPtr->nDGAMode = 0;
 	}
@@ -1278,7 +1279,7 @@ WsfbDGAAddModes(ScrnInfoPtr pScrn)
 	DGAModePtr pDGAMode;
 
 	do {
-		pDGAMode = xrealloc(fPtr->pDGAMode,
+		pDGAMode = realloc(fPtr->pDGAMode,
 				    (fPtr->nDGAMode + 1) * sizeof(DGAModeRec));
 		if (!pDGAMode)
 			break;
