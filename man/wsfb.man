@@ -57,8 +57,8 @@ The
 .B wsfb
 driver supports all hardware where a wsdisplay framebuffer driver
 is available on OpenBSD and NetBSD.
-On OpenBSD, currently this includes OpenBSD/macppc, OpenBSD/sparc,
-OpenBSD/sparc64 and OpenBSD/alpha on TGA graphics cards.
+On OpenBSD, currently this includes OpenBSD/macppc, OpenBSD/sgi,
+OpenBSD/sparc, OpenBSD/sparc64 and OpenBSD/alpha on TGA graphics cards.
 It also supports NetBSD/i386 using wsdisplay on vesafb(4).
 .SH CONFIGURATION DETAILS
 Please refer to __xconfigfile__(__filemansuffix__) for general configuration
