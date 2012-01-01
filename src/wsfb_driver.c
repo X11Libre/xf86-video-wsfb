@@ -136,7 +136,7 @@ static Bool WsfbDriverFunc(ScrnInfoPtr pScrn, xorgDriverFuncOp op,
 				pointer ptr);
 
 /* Helper functions */
-static int wsfb_open(char *);
+static int wsfb_open(const char *);
 static pointer wsfb_mmap(size_t, off_t, int);
 
 enum { WSFB_ROTATE_NONE = 0,
@@ -291,7 +291,7 @@ WsfbIdentify(int flags)
 
 /* Open the framebuffer device. */
 static int
-wsfb_open(char *dev)
+wsfb_open(const char *dev)
 {
 	int fd = -1;
 
@@ -345,7 +345,7 @@ WsfbProbe(DriverPtr drv, int flags)
 	int i, fd, entity;
        	GDevPtr *devSections;
 	int numDevSections;
-	char *dev;
+	const char *dev;
 	Bool foundScreen = FALSE;
 
 	TRACE("probe start");
@@ -396,8 +396,8 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 {
 	WsfbPtr fPtr;
 	int default_depth, wstype;
-	char *dev, *s;
-	char *mod = NULL;
+	const char *dev;
+	char *mod = NULL, *s;
 	const char *reqSym = NULL;
 	Gamma zeros = {0.0, 0.0, 0.0};
 	DisplayModePtr mode;
