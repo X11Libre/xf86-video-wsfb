@@ -31,9 +31,7 @@ EXTRA_DIST = @DRIVER_NAME@.man
 
 CLEANFILES = $(driverman_DATA)
 
-
 # String replacements in MAN_SUBSTS now come from xorg-macros.m4 via configure
-
 
 SUFFIXES = .$(DRIVER_MAN_SUFFIX) .man
 
