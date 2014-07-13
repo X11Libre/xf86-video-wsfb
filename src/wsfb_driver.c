@@ -60,12 +60,6 @@
 #include "dgaproc.h"
 
 /* For visuals */
-#ifdef HAVE_XF1BPP
-# include "xf1bpp.h"
-#endif
-#ifdef HAVE_XF4BPP
-# include "xf4bpp.h"
-#endif
 #include "fb.h"
 
 #if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 6
@@ -398,7 +392,7 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 	WsfbPtr fPtr;
 	int default_depth, wstype;
 	const char *dev;
-	char *mod = NULL, *s;
+	char *s;
 	Gamma zeros = {0.0, 0.0, 0.0};
 	DisplayModePtr mode;
 
@@ -624,25 +618,6 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 	/* Set the display resolution. */
 	xf86SetDpi(pScrn, 0, 0);
 
-	/* Load bpp-specific modules. */
-	switch(pScrn->bitsPerPixel) {
-#ifdef HAVE_XF1BPP
-	case 1:
-		mod = "xf1bpp";
-		reqSym = "xf1bppScreenInit";
-		break;
-#endif
-#ifdef HAVE_XF4BPP
-	case 4:
-		mod = "xf4bpp";
-		reqSym = "xf4bppScreenInit";
-		break;
-#endif
-	default:
-		mod = "fb";
-		break;
-	}
-
 
 	/* Load shadow if needed. */
 	if (fPtr->shadowFB) {
@@ -653,7 +628,7 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 			return FALSE;
 		}
 	}
-	if (mod && xf86LoadSubModule(pScrn, mod) == NULL) {
+	if (xf86LoadSubModule(pScrn, "fb") == NULL) {
 		WsfbFreeRec(pScrn);
 		return FALSE;
 	}
@@ -825,21 +800,7 @@ WsfbScreenInit(SCREEN_INIT_ARGS_DECL)
 
 	switch (pScrn->bitsPerPixel) {
 	case 1:
-#ifdef HAVE_XF1BPP
-		ret = xf1bppScreenInit(pScreen, fPtr->fbstart,
-				       pScrn->virtualX, pScrn->virtualY,
-				       pScrn->xDpi, pScrn->yDpi,
-				       fPtr->linebytes * 8);
-		break;
-#endif
 	case 4:
-#ifdef HAVE_XF4BPP
-		ret = xf4bppScreenInit(pScreen, fPtr->fbstart,
-				       pScrn->virtualX, pScrn->virtualY,
-				       pScrn->xDpi, pScrn->yDpi,
-				       fPtr->linebytes * 2);
-		break;
-#endif
 	case 8:
 	case 16:
 	case 24:
