@@ -53,7 +53,6 @@
 #include "xf86_OSproc.h"
 
 #include "mipointer.h"
-#include "mibstore.h"
 #include "micmap.h"
 #include "colormapst.h"
 #include "xf86cmap.h"
@@ -664,7 +663,7 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 }
 
 static void
-wfsbUpdateRotatePacked(ScreenPtr pScreen, shadowBufPtr pBuf)
+wsfbUpdateRotatePacked(ScreenPtr pScreen, shadowBufPtr pBuf)
 {
     shadowUpdateRotatePacked(pScreen, pBuf);
 }
@@ -904,7 +903,6 @@ WsfbScreenInit(SCREEN_INIT_ARGS_DECL)
 	}
 
 	xf86SetBlackWhitePixels(pScreen);
-	miInitializeBackingStore(pScreen);
 	xf86SetBackingStore(pScreen);
 
 	/* Software cursor. */
