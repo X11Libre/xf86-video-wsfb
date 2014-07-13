@@ -152,7 +152,7 @@ static int pix24bpp = 0;
 
 _X_EXPORT DriverRec WSFB = {
 	WSFB_VERSION,
-	WSFB_DRIVER_NAME,
+	(char *)WSFB_DRIVER_NAME,
 	WsfbIdentify,
 	WsfbProbe,
 	WsfbAvailableOptions,
@@ -364,8 +364,8 @@ WsfbProbe(DriverPtr drv, int flags)
 			if (pScrn != NULL) {
 				foundScreen = TRUE;
 				pScrn->driverVersion = WSFB_VERSION;
-				pScrn->driverName = WSFB_DRIVER_NAME;
-				pScrn->name = WSFB_NAME;
+				pScrn->driverName = (char *)WSFB_DRIVER_NAME;
+				pScrn->name = (char *)WSFB_NAME;
 				pScrn->Probe = WsfbProbe;
 				pScrn->PreInit = WsfbPreInit;
 				pScrn->ScreenInit = WsfbScreenInit;
@@ -491,7 +491,7 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 
 	/* Color weight */
 	if (pScrn->depth > 8) {
-		rgb zeros = { 0, 0, 0 }, masks;
+		rgb izeros = { 0, 0, 0 }, masks;
 
 		if (wstype == WSDISPLAY_TYPE_SUN24 ||
 		    wstype == WSDISPLAY_TYPE_SUNCG12 ||
@@ -507,7 +507,7 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 			masks.blue = 0;
 		}
 
-		if (!xf86SetWeight(pScrn, zeros, masks))
+		if (!xf86SetWeight(pScrn, izeros, masks))
 			return FALSE;
 	}
 
@@ -528,7 +528,7 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 
 	pScrn->progClock = TRUE;
 	pScrn->rgbBits   = 8;
-	pScrn->chipset   = "wsfb";
+	pScrn->chipset   = (char *)"wsfb";
 	pScrn->videoRam  = fPtr->linebytes * fPtr->info.height;
 
 	xf86DrvMsg(pScrn->scrnIndex, X_INFO, "Vidmem: %dk\n",
@@ -591,7 +591,7 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 	mode = (DisplayModePtr)malloc(sizeof(DisplayModeRec));
 	mode->prev = mode;
 	mode->next = mode;
-	mode->name = "wsfb current mode";
+	mode->name = (char *)"wsfb current mode";
 	mode->status = MODE_OK;
 	mode->type = M_T_BUILTIN;
 	mode->Clock = 0;
