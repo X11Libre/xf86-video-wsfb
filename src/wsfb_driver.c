@@ -399,7 +399,6 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 	int default_depth, wstype;
 	const char *dev;
 	char *mod = NULL, *s;
-	const char *reqSym = NULL;
 	Gamma zeros = {0.0, 0.0, 0.0};
 	DisplayModePtr mode;
 
@@ -1238,7 +1237,6 @@ static Bool
 WsfbDGASetMode(ScrnInfoPtr pScrn, DGAModePtr pDGAMode)
 {
 	DisplayModePtr pMode;
-	int scrnIdx = pScrn->pScreen->myNum;
 	int frameX0, frameY0;
 
 	if (pDGAMode) {
