@@ -5,8 +5,11 @@ test -z "$srcdir" && srcdir=.
 
 ORIGDIR=`pwd`
 cd $srcdir
+test -d m4 || mkdir m4
 
 autoreconf -v --install || exit 1
 cd $ORIGDIR || exit $?
 
-$srcdir/configure --enable-maintainer-mode "$@"
+if test -z "$NOCONFIGURE"; then
+	$srcdir/configure "$@"
+fi
