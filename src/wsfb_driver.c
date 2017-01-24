@@ -200,18 +200,11 @@ static pointer
 WsfbSetup(pointer module, pointer opts, int *errmaj, int *errmin)
 {
 	static Bool setupDone = FALSE;
-	const char *osname;
 
-	/* Check that we're being loaded on a OpenBSD or NetBSD system. */
-	LoaderGetOS(&osname, NULL, NULL, NULL);
-	if (!osname || (strcmp(osname, "openbsd") != 0 &&
-			strcmp(osname, "netbsd") != 0)) {
-		if (errmaj)
-			*errmaj = LDR_BADOS;
-		if (errmin)
-			*errmin = 0;
-		return NULL;
-	}
+#if !defined(__OpenBSD__) && !defined(__NetBSD__)
+        return NULL;
+#endif
+
 	if (!setupDone) {
 		setupDone = TRUE;
 		xf86AddDriver(&WSFB, module, HaveDriverFuncs);
