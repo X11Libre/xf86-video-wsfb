@@ -1065,7 +1065,7 @@ WsfbLoadPalette(ScrnInfoPtr pScrn, int numColors, int *indices,
 	} else {
 		/*
 		 * Change all colors in 2 ioctls
-		 * and limit the data to be transfered.
+		 * and limit the data to be transferred.
 		 */
 		for (i = 0; i < numColors; i++) {
 			if (indices[i] < indexMin)
