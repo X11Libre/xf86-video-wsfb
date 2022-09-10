@@ -544,7 +544,7 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 		if (xf86ReturnOptValBool(fPtr->Options,
 					 OPTION_SHADOW_FB, FALSE)) {
 			xf86DrvMsg(pScrn->scrnIndex, X_WARNING,
-				   "Shadow FB option ignored on depth < 8");
+				   "Shadow FB option ignored on depth < 8\n");
 		}
 
 	/* Rotation */
@@ -576,7 +576,7 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 			}
 		} else {
 			xf86DrvMsg(pScrn->scrnIndex, X_WARNING,
-			    "Option \"Rotate\" ignored on depth < 8");
+			    "Option \"Rotate\" ignored on depth < 8\n");
 		}
 	}
 
@@ -806,7 +806,7 @@ WsfbScreenInit(SCREEN_INIT_ARGS_DECL)
 		break;
 	default:
 		xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
-			   "Unsupported bpp: %d", pScrn->bitsPerPixel);
+			   "Unsupported bpp: %d\n", pScrn->bitsPerPixel);
 		return FALSE;
 	} /* case */
 
@@ -831,7 +831,7 @@ WsfbScreenInit(SCREEN_INIT_ARGS_DECL)
 	if (pScrn->bitsPerPixel >= 8) {
 		if (!fbPictureInit(pScreen, NULL, 0))
 			xf86DrvMsg(pScrn->scrnIndex, X_WARNING,
-				   "RENDER extension initialisation failed.");
+				   "RENDER extension initialisation failed.\n");
 	}
 	if (fPtr->shadowFB && !WsfbShadowInit(pScreen)) {
 		xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
