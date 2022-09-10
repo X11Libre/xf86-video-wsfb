@@ -202,7 +202,7 @@ WsfbSetup(pointer module, pointer opts, int *errmaj, int *errmin)
 	static Bool setupDone = FALSE;
 
 #if !defined(__OpenBSD__) && !defined(__NetBSD__)
-        return NULL;
+	return NULL;
 #endif
 
 	if (!setupDone) {
@@ -632,13 +632,13 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 static void
 wsfbUpdateRotatePacked(ScreenPtr pScreen, shadowBufPtr pBuf)
 {
-    shadowUpdateRotatePacked(pScreen, pBuf);
+	shadowUpdateRotatePacked(pScreen, pBuf);
 }
 
 static void
 wsfbUpdatePacked(ScreenPtr pScreen, shadowBufPtr pBuf)
 {
-    shadowUpdatePacked(pScreen, pBuf);
+	shadowUpdatePacked(pScreen, pBuf);
 }
 
 static Bool
@@ -959,39 +959,40 @@ WsfbWindowLinear(ScreenPtr pScreen, CARD32 row, CARD32 offset, int mode,
 static void
 WsfbPointerMoved(SCRN_ARG_TYPE arg, int x, int y)
 {
-    SCRN_INFO_PTR(arg);
-    WsfbPtr fPtr = WSFBPTR(pScrn);
-    int newX, newY;
+	SCRN_INFO_PTR(arg);
+	WsfbPtr fPtr = WSFBPTR(pScrn);
+	int newX, newY;
 
-    switch (fPtr->rotate)
-    {
-    case WSFB_ROTATE_CW:
-	/* 90 degrees CW rotation. */
-	newX = pScrn->pScreen->height - y - 1;
-	newY = x;
-	break;
+	switch (fPtr->rotate) {
+	case WSFB_ROTATE_CW:
+		/* 90 degrees CW rotation. */
+		newX = pScrn->pScreen->height - y - 1;
+		newY = x;
+		break;
 
-    case WSFB_ROTATE_CCW:
-	/* 90 degrees CCW rotation. */
-	newX = y;
-	newY = pScrn->pScreen->width - x - 1;
-	break;
+	case WSFB_ROTATE_CCW:
+		/* 90 degrees CCW rotation. */
+		newX = y;
+		newY = pScrn->pScreen->width - x - 1;
+		break;
 
-    case WSFB_ROTATE_UD:
-	/* 180 degrees UD rotation. */
-	newX = pScrn->pScreen->width - x - 1;
-	newY = pScrn->pScreen->height - y - 1;
-	break;
+	case WSFB_ROTATE_UD:
+		/* 180 degrees UD rotation. */
+		newX = pScrn->pScreen->width - x - 1;
+		newY = pScrn->pScreen->height - y - 1;
+		break;
 
-    default:
-	/* No rotation. */
-	newX = x;
-	newY = y;
-	break;
-    }
+	default:
+		/* No rotation. */
+		newX = x;
+		newY = y;
+		break;
+	}
 
-    /* Pass adjusted pointer coordinates to wrapped PointerMoved function. */
-    (*fPtr->PointerMoved)(arg, newX, newY);
+	/*
+	 * Pass adjusted pointer coordinates to wrapped PointerMoved function.
+	 */
+	(*fPtr->PointerMoved)(arg, newX, newY);
 }
 
 static Bool
