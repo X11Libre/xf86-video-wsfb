@@ -36,8 +36,7 @@ AM_INIT_AUTOMAKE([foreign dist-xz])
 AM_MAINTAINER_MODE
 
 # Initialize libtool
-AC_DISABLE_STATIC
-AC_PROG_LIBTOOL
+LT_INIT([disable-static])
 
 # Initialize X.Org macros 1.8 or later for MAN_SUBSTS set by XORG_MANPAGE_SECTIONS
 m4_ifndef([XORG_MACROS_VERSION],
