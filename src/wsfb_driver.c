@@ -127,6 +127,10 @@ static Bool WsfbDGASetMode(ScrnInfoPtr, DGAModePtr);
 static void WsfbDGASetViewport(ScrnInfoPtr, int, int, int);
 static Bool WsfbDGAInit(ScrnInfoPtr, ScreenPtr);
 #endif
+
+#ifdef WSDISPLAY_TYPE_HOLLYWOOD
+static void WsfbShadowUpdateRGB16ToYUY2(ScreenPtr, shadowBufPtr);
+#endif
 static Bool WsfbDriverFunc(ScrnInfoPtr pScrn, xorgDriverFuncOp op,
 				pointer ptr);
 
@@ -145,6 +149,15 @@ enum { WSFB_ROTATE_NONE = 0,
  * It indicates the binding choice made in the first PreInit.
  */
 static int pix24bpp = 0;
+
+/*
+ * Screen-independent lookup table for RGB16 to YUV conversions.
+ */
+#ifdef WSDISPLAY_TYPE_HOLLYWOOD
+static unsigned char *mapRGB16ToY = NULL;
+static unsigned char *mapRGB16ToU = NULL;
+static unsigned char *mapRGB16ToV = NULL;
+#endif
 
 #define WSFB_VERSION		4000
 #define WSFB_NAME		"wsfb"
@@ -227,6 +240,7 @@ typedef struct {
 	int			rotate;
 	Bool			shadowFB;
 	void *			shadow;
+	Bool			useRGB16ToYUY2;
 	CloseScreenProcPtr	CloseScreen;
 	CreateScreenResourcesProcPtr CreateScreenResources;
 	void			(*PointerMoved)(SCRN_ARG_TYPE, int, int);
@@ -546,6 +560,24 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 			xf86DrvMsg(pScrn->scrnIndex, X_WARNING,
 				   "Shadow FB option ignored on depth < 8\n");
 		}
+
+	fPtr->useRGB16ToYUY2 = FALSE;
+#ifdef WSDISPLAY_TYPE_HOLLYWOOD
+	/*
+	 * Hollywood has a YUY2 framebuffer, but we treat it as
+	 * RGB565 and convert with a custom shadowproc.
+	 */
+	if (wstype == WSDISPLAY_TYPE_HOLLYWOOD) {
+		xf86DrvMsg(pScrn->scrnIndex, X_INFO,
+			   "Enabling RGB16->YUY2 conversion for Hollywood\n");
+		fPtr->useRGB16ToYUY2 = TRUE;
+		if (!fPtr->shadowFB) {
+			xf86DrvMsg(pScrn->scrnIndex, X_WARNING,
+				   "Shadow FB forced on for RGB16->YUY2 conversion\n");
+			fPtr->shadowFB = TRUE;
+		}
+	}
+#endif
 
 	/* Rotation */
 	fPtr->rotate = WSFB_ROTATE_NONE;
@@ -1326,3 +1358,100 @@ WsfbDriverFunc(ScrnInfoPtr pScrn, xorgDriverFuncOp op,
 		return FALSE;
 	}
 }
+
+#ifdef WSDISPLAY_TYPE_HOLLYWOOD
+static inline void
+WsfbCopyRGB16ToYUY2(void *dest, void *src, int len)
+{
+	uint16_t *src16 = src;
+	uint32_t *dest32 = dest;
+
+	while (len > 0) {
+		const uint16_t rgb0 = src16[0];
+		const uint16_t rgb1 = src16[1];
+		const uint16_t rgb = ((rgb0 >> 1) & ~0x8410) +
+				     ((rgb1 >> 1) & ~0x8410) +
+				     ((rgb0 & rgb1) & 0x0841);
+		const uint32_t y0 = mapRGB16ToY[rgb0];
+		const uint32_t y1 = mapRGB16ToY[rgb1];
+		const uint32_t u = mapRGB16ToU[rgb];
+		const uint32_t v = mapRGB16ToV[rgb];
+
+		*dest32 = (y0 << 24) | (u << 16) | (y1 << 8) | v;
+
+		dest32++;
+		src16 += 2;
+		len -= 4;
+	}
+}
+
+void
+WsfbShadowUpdateRGB16ToYUY2(ScreenPtr pScreen, shadowBufPtr pBuf)
+{
+    RegionPtr	damage = DamageRegion (pBuf->pDamage);
+    PixmapPtr	pShadow = pBuf->pPixmap;
+    int		nbox = RegionNumRects (damage);
+    BoxPtr	pbox = RegionRects (damage);
+    FbBits	*shaBase, *shaLine, *sha;
+    FbStride	shaStride;
+    int		scrBase, scrLine, scr;
+    int		shaBpp;
+    int		shaXoff, shaYoff; /* XXX assumed to be zero */
+    int		x, y, w, h, width;
+    int         i;
+    FbBits	*winBase = NULL, *win;
+    CARD32      winSize;
+
+    fbGetDrawable (&pShadow->drawable, shaBase, shaStride, shaBpp, shaXoff, shaYoff);
+    while (nbox--)
+    {
+	x = pbox->x1 * shaBpp;
+	y = pbox->y1;
+	w = (pbox->x2 - pbox->x1) * shaBpp;
+	h = pbox->y2 - pbox->y1;
+
+	scrLine = (x >> FB_SHIFT);
+	shaLine = shaBase + y * shaStride + (x >> FB_SHIFT);
+
+	x &= FB_MASK;
+	w = (w + x + FB_MASK) >> FB_SHIFT;
+
+	while (h--)
+	{
+	    winSize = 0;
+	    scrBase = 0;
+	    width = w;
+	    scr = scrLine;
+	    sha = shaLine;
+	    while (width) {
+		/* how much remains in this window */
+		i = scrBase + winSize - scr;
+		if (i <= 0 || scr < scrBase)
+		{
+		    winBase = (FbBits *) (*pBuf->window) (pScreen,
+							  y,
+							  scr * sizeof (FbBits),
+							  SHADOW_WINDOW_WRITE,
+							  &winSize,
+							  pBuf->closure);
+		    if(!winBase)
+			return;
+		    scrBase = scr;
+		    winSize /= sizeof (FbBits);
+		    i = winSize;
+		}
+		win = winBase + (scr - scrBase);
+		if (i > width)
+		    i = width;
+		width -= i;
+		scr += i;
+		WsfbCopyRGB16ToYUY2(win, sha, i * sizeof(FbBits));
+		sha += i;
+	    }
+	    shaLine += shaStride;
+	    y++;
+	}
+	pbox++;
+    }
+}
+#endif
