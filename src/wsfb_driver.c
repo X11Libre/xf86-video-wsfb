@@ -264,7 +264,7 @@ WsfbGetRec(ScrnInfoPtr pScrn)
 	if (pScrn->driverPrivate != NULL)
 		return TRUE;
 
-	pScrn->driverPrivate = xnfcalloc(sizeof(WsfbRec), 1);
+	pScrn->driverPrivate = XNFcallocarray(sizeof(WsfbRec), 1);
 	return TRUE;
 }
 
