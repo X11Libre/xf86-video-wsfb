@@ -62,11 +62,6 @@
 /* For visuals */
 #include "fb.h"
 
-#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 6
-#include "xf86Resources.h"
-#include "xf86RAC.h"
-#endif
-
 #ifdef XvExtension
 #include "xf86xv.h"
 #endif
@@ -415,11 +410,6 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 	fPtr = WSFBPTR(pScrn);
 
 	fPtr->pEnt = xf86GetEntityInfo(pScrn->entityList[0]);
-
-#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 6
-	pScrn->racMemFlags = RAC_FB | RAC_COLORMAP | RAC_CURSOR | RAC_VIEWPORT;
-	pScrn->racIoFlags = pScrn->racMemFlags;
-#endif
 
 	dev = xf86FindOptionValue(fPtr->pEnt->device->options, "device");
 	fPtr->fd = wsfb_open(dev);
