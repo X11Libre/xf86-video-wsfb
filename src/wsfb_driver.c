@@ -66,8 +66,6 @@
 #include "xf86xv.h"
 #endif
 
-#include "compat-api.h"
-
 #ifdef X_PRIVSEP
 extern int priv_open_device(const char *);
 #else
@@ -100,15 +98,15 @@ static const OptionInfoRec * WsfbAvailableOptions(int, int);
 static void WsfbIdentify(int);
 static Bool WsfbProbe(DriverPtr, int);
 static Bool WsfbPreInit(ScrnInfoPtr, int);
-static Bool WsfbScreenInit(SCREEN_INIT_ARGS_DECL);
-static Bool WsfbCloseScreen(CLOSE_SCREEN_ARGS_DECL);
+static Bool WsfbScreenInit(ScreenPtr pScreen, int argc, char **argv);
+static Bool WsfbCloseScreen(ScreenPtr pScreen);
 static void *WsfbWindowLinear(ScreenPtr, CARD32, CARD32, int, CARD32 *,
 			      void *);
-static void WsfbPointerMoved(SCRN_ARG_TYPE, int, int);
-static Bool WsfbEnterVT(VT_FUNC_ARGS_DECL);
-static void WsfbLeaveVT(VT_FUNC_ARGS_DECL);
-static Bool WsfbSwitchMode(SWITCH_MODE_ARGS_DECL);
-static int WsfbValidMode(SCRN_ARG_TYPE, DisplayModePtr, Bool, int);
+static void WsfbPointerMoved(ScrnInfoPtr, int, int);
+static Bool WsfbEnterVT(ScrnInfoPtr pScrn);
+static void WsfbLeaveVT(ScrnInfoPtr pScrn);
+static Bool WsfbSwitchMode(ScrnInfoPtr pScrn, DisplayModePtr mode);
+static int WsfbValidMode(ScrnInfoPtr, DisplayModePtr, Bool, int);
 static void WsfbLoadPalette(ScrnInfoPtr, int, int *, LOCO *, VisualPtr);
 static Bool WsfbSaveScreen(ScreenPtr, int);
 static void WsfbSave(ScrnInfoPtr);
@@ -238,7 +236,7 @@ typedef struct {
 	Bool			useRGB16ToYUY2;
 	CloseScreenProcPtr	CloseScreen;
 	CreateScreenResourcesProcPtr CreateScreenResources;
-	void			(*PointerMoved)(SCRN_ARG_TYPE, int, int);
+	void			(*PointerMoved)(ScrnInfoPtr, int, int);
 	EntityInfoPtr		pEnt;
 	struct wsdisplay_cmap	saved_cmap;
 
@@ -704,7 +702,7 @@ WsfbShadowInit(ScreenPtr pScreen)
 }
 
 static Bool
-WsfbScreenInit(SCREEN_INIT_ARGS_DECL)
+WsfbScreenInit(ScreenPtr pScreen, int argc, char **argv)
 {
 	ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);
 	WsfbPtr fPtr = WSFBPTR(pScrn);
@@ -926,12 +924,11 @@ WsfbScreenInit(SCREEN_INIT_ARGS_DECL)
 }
 
 static Bool
-WsfbCloseScreen(CLOSE_SCREEN_ARGS_DECL)
+WsfbCloseScreen(ScreenPtr pScreen)
 {
 	ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);
 	PixmapPtr pPixmap;
 	WsfbPtr fPtr = WSFBPTR(pScrn);
-
 
 	TRACE_ENTER("WsfbCloseScreen");
 
@@ -960,7 +957,7 @@ WsfbCloseScreen(CLOSE_SCREEN_ARGS_DECL)
 	/* Unwrap CloseScreen. */
 	pScreen->CloseScreen = fPtr->CloseScreen;
 	TRACE_EXIT("WsfbCloseScreen");
-	return (*pScreen->CloseScreen)(CLOSE_SCREEN_ARGS);
+	return (*pScreen->CloseScreen)(pScreen);
 }
 
 static void *
@@ -981,9 +978,8 @@ WsfbWindowLinear(ScreenPtr pScreen, CARD32 row, CARD32 offset, int mode,
 }
 
 static void
-WsfbPointerMoved(SCRN_ARG_TYPE arg, int x, int y)
+WsfbPointerMoved(ScrnInfoPtr pScrn, int x, int y)
 {
-	SCRN_INFO_PTR(arg);
 	WsfbPtr fPtr = WSFBPTR(pScrn);
 	int newX, newY;
 
@@ -1020,10 +1016,8 @@ WsfbPointerMoved(SCRN_ARG_TYPE arg, int x, int y)
 }
 
 static Bool
-WsfbEnterVT(VT_FUNC_ARGS_DECL)
+WsfbEnterVT(ScrnInfoPtr pScrn)
 {
-	SCRN_INFO_PTR(arg);
-
 	TRACE_ENTER("EnterVT");
 	pScrn->vtSema = TRUE;
 	TRACE_EXIT("EnterVT");
@@ -1031,34 +1025,22 @@ WsfbEnterVT(VT_FUNC_ARGS_DECL)
 }
 
 static void
-WsfbLeaveVT(VT_FUNC_ARGS_DECL)
+WsfbLeaveVT(ScrnInfoPtr pScrn)
 {
-#if DEBUG
-	SCRN_INFO_PTR(arg);
-#endif
-
 	TRACE_ENTER("LeaveVT");
 }
 
 static Bool
-WsfbSwitchMode(SWITCH_MODE_ARGS_DECL)
+WsfbSwitchMode(ScrnInfoPtr pScrn, DisplayModePtr mode)
 {
-#if DEBUG
-	SCRN_INFO_PTR(arg);
-#endif
-
 	TRACE_ENTER("SwitchMode");
 	/* Nothing else to do. */
 	return TRUE;
 }
 
 static int
-WsfbValidMode(SCRN_ARG_TYPE arg, DisplayModePtr mode, Bool verbose, int flags)
+WsfbValidMode(ScrnInfoPtr pScrn, DisplayModePtr mode, Bool verbose, int flags)
 {
-#if DEBUG
-	SCRN_INFO_PTR(arg);
-#endif
-
 	TRACE_ENTER("ValidMode");
 	return MODE_OK;
 }
@@ -1229,9 +1211,9 @@ WsfbDGASetMode(ScrnInfoPtr pScrn, DGAModePtr pDGAMode)
 		frameY0 = pScrn->frameY0;
 	}
 
-	if (!(*pScrn->SwitchMode)(SWITCH_MODE_ARGS(pScrn, pMode)))
+	if (!(*pScrn->SwitchMode)(pScrn, pMode))
 		return FALSE;
-	(*pScrn->AdjustFrame)(ADJUST_FRAME_ARGS(pScrn, frameX0, frameY0));
+	(*pScrn->AdjustFrame)(pScrn, frameX0, frameY0);
 
 	return TRUE;
 }
@@ -1239,7 +1221,7 @@ WsfbDGASetMode(ScrnInfoPtr pScrn, DGAModePtr pDGAMode)
 static void
 WsfbDGASetViewport(ScrnInfoPtr pScrn, int x, int y, int flags)
 {
-	(*pScrn->AdjustFrame)(ADJUST_FRAME_ARGS(pScrn, x, y));
+	(*pScrn->AdjustFrame)(pScrn, x, y);
 }
 
 static int
