@@ -1,0 +1,5 @@
+variables:
+    FDO_UPSTREAM_REPO:  'xorg/driver/xf86-video-wsfb'
+
+include:
+    - local:    '.gitlab-ci/common/xorg-driver.yml'
