@@ -394,7 +394,7 @@ WsfbPreInit(ScrnInfoPtr pScrn, int flags)
 	WsfbPtr fPtr;
 	int default_depth, wstype;
 	const char *dev;
-	char *s;
+	const char *s;
 	Gamma zeros = {0.0, 0.0, 0.0};
 	DisplayModePtr mode;
 
