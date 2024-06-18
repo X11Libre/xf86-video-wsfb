@@ -1359,13 +1359,13 @@ WsfbCopyRGB16ToYUY2(void *dest, void *src, int len)
 	while (len > 0) {
 		const uint16_t rgb0 = src16[0];
 		const uint16_t rgb1 = src16[1];
-		const uint16_t rgb = ((rgb0 >> 1) & ~0x8410) +
+		const uint16_t rgbv = ((rgb0 >> 1) & ~0x8410) +
 				     ((rgb1 >> 1) & ~0x8410) +
 				     ((rgb0 & rgb1) & 0x0841);
 		const uint32_t y0 = mapRGB16ToY[rgb0];
 		const uint32_t y1 = mapRGB16ToY[rgb1];
-		const uint32_t u = mapRGB16ToU[rgb];
-		const uint32_t v = mapRGB16ToV[rgb];
+		const uint32_t u = mapRGB16ToU[rgbv];
+		const uint32_t v = mapRGB16ToV[rgbv];
 
 		*dest32 = (y0 << 24) | (u << 16) | (y1 << 8) | v;
 
