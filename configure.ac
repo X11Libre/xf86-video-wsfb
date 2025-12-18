@@ -69,9 +69,5 @@ AC_HEADER_STDC
 
 AC_SUBST([moduledir])
 
-AC_CONFIG_FILES([
-	Makefile
-	src/Makefile
-	man/Makefile
-])
+AC_CONFIG_FILES([Makefile src/Makefile man/Makefile])
 AC_OUTPUT
