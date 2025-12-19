@@ -54,13 +54,7 @@ AC_ARG_WITH(xorg-module-dir,
             [moduledir="$withval"],
             [moduledir=`$PKG_CONFIG --variable=moduledir xorg-server`])
 
-# Store the list of server defined optional extensions in REQUIRED_MODULES
-#XORG_DRIVER_CHECK_EXT(RANDR, randrproto)
-#XORG_DRIVER_CHECK_EXT(RENDER, renderproto)
-#XORG_DRIVER_CHECK_EXT(XV, videoproto)
-
-# Obtain compiler/linker options for the driver dependencies
-PKG_CHECK_MODULES(XORG, [xorg-server >= 1.18 xproto $REQUIRED_MODULES])
+PKG_CHECK_MODULES(XORG, [xorg-server >= 25.0.0 xproto])
 
 # Checks for libraries.
 
