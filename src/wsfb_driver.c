@@ -1006,7 +1006,7 @@ WsfbPointerMoved(ScrnInfoPtr pScrn, int x, int y)
 	/*
 	 * Pass adjusted pointer coordinates to wrapped PointerMoved function.
 	 */
-	(*fPtr->PointerMoved)(arg, newX, newY);
+	(*fPtr->PointerMoved)(pScrn, newX, newY);
 }
 
 static Bool
