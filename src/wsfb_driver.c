@@ -118,9 +118,6 @@ static void WsfbDGASetViewport(ScrnInfoPtr, int, int, int);
 static Bool WsfbDGAInit(ScrnInfoPtr, ScreenPtr);
 #endif
 
-#ifdef WSDISPLAY_TYPE_HOLLYWOOD
-static void WsfbShadowUpdateRGB16ToYUY2(ScreenPtr, shadowBufPtr);
-#endif
 static Bool WsfbDriverFunc(ScrnInfoPtr pScrn, xorgDriverFuncOp op,
 				pointer ptr);
 
@@ -1352,75 +1349,5 @@ WsfbCopyRGB16ToYUY2(void *dest, void *src, int len)
 		src16 += 2;
 		len -= 4;
 	}
-}
-
-void
-WsfbShadowUpdateRGB16ToYUY2(ScreenPtr pScreen, shadowBufPtr pBuf)
-{
-    RegionPtr	damage = DamageRegion (pBuf->pDamage);
-    PixmapPtr	pShadow = pBuf->pPixmap;
-    int		nbox = RegionNumRects (damage);
-    BoxPtr	pbox = RegionRects (damage);
-    FbBits	*shaBase, *shaLine, *sha;
-    FbStride	shaStride;
-    int		scrBase, scrLine, scr;
-    int		shaBpp;
-    int		shaXoff, shaYoff; /* XXX assumed to be zero */
-    int		x, y, w, h, width;
-    int         i;
-    FbBits	*winBase = NULL, *win;
-    CARD32      winSize;
-
-    fbGetDrawable (&pShadow->drawable, shaBase, shaStride, shaBpp, shaXoff, shaYoff);
-    while (nbox--)
-    {
-	x = pbox->x1 * shaBpp;
-	y = pbox->y1;
-	w = (pbox->x2 - pbox->x1) * shaBpp;
-	h = pbox->y2 - pbox->y1;
-
-	scrLine = (x >> FB_SHIFT);
-	shaLine = shaBase + y * shaStride + (x >> FB_SHIFT);
-
-	x &= FB_MASK;
-	w = (w + x + FB_MASK) >> FB_SHIFT;
-
-	while (h--)
-	{
-	    winSize = 0;
-	    scrBase = 0;
-	    width = w;
-	    scr = scrLine;
-	    sha = shaLine;
-	    while (width) {
-		/* how much remains in this window */
-		i = scrBase + winSize - scr;
-		if (i <= 0 || scr < scrBase)
-		{
-		    winBase = (FbBits *) (*pBuf->window) (pScreen,
-							  y,
-							  scr * sizeof (FbBits),
-							  SHADOW_WINDOW_WRITE,
-							  &winSize,
-							  pBuf->closure);
-		    if(!winBase)
-			return;
-		    scrBase = scr;
-		    winSize /= sizeof (FbBits);
-		    i = winSize;
-		}
-		win = winBase + (scr - scrBase);
-		if (i > width)
-		    i = width;
-		width -= i;
-		scr += i;
-		WsfbCopyRGB16ToYUY2(win, sha, i * sizeof(FbBits));
-		sha += i;
-	    }
-	    shaLine += shaStride;
-	    y++;
-	}
-	pbox++;
-    }
 }
 #endif
