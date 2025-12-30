@@ -33,7 +33,6 @@ AC_CONFIG_AUX_DIR(.)
 
 # Initialize Automake
 AM_INIT_AUTOMAKE([foreign dist-xz])
-AM_MAINTAINER_MODE
 
 # Initialize libtool
 LT_INIT([disable-static])
