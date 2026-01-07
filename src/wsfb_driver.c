@@ -88,7 +88,7 @@ extern int priv_open_device(const char *);
 #endif
 
 /* Prototypes */
-static pointer WsfbSetup(pointer, pointer, int *, int *);
+static void *WsfbSetup(void*, void*, int *, int *);
 static Bool WsfbGetRec(ScrnInfoPtr);
 static void WsfbFreeRec(ScrnInfoPtr);
 static const OptionInfoRec * WsfbAvailableOptions(int, int);
@@ -118,12 +118,11 @@ static void WsfbDGASetViewport(ScrnInfoPtr, int, int, int);
 static Bool WsfbDGAInit(ScrnInfoPtr, ScreenPtr);
 #endif
 
-static Bool WsfbDriverFunc(ScrnInfoPtr pScrn, xorgDriverFuncOp op,
-				pointer ptr);
+static Bool WsfbDriverFunc(ScrnInfoPtr pScrn, xorgDriverFuncOp op, void *ptr);
 
 /* Helper functions */
 static int wsfb_open(const char *);
-static pointer wsfb_mmap(size_t, off_t, int);
+static void *wsfb_mmap(size_t, off_t, int);
 
 enum { WSFB_ROTATE_NONE = 0,
        WSFB_ROTATE_CCW = 90,
@@ -196,8 +195,8 @@ static XF86ModuleVersionInfo WsfbVersRec = {
 
 _X_EXPORT XF86ModuleData wsfbModuleData = { &WsfbVersRec, WsfbSetup, NULL };
 
-static pointer
-WsfbSetup(pointer module, pointer opts, int *errmaj, int *errmin)
+static void*
+WsfbSetup(void *module, void *opts, int *errmaj, int *errmin)
 {
 	static Bool setupDone = FALSE;
 
@@ -208,7 +207,7 @@ WsfbSetup(pointer module, pointer opts, int *errmaj, int *errmin)
 	if (!setupDone) {
 		setupDone = TRUE;
 		xf86AddDriver(&WSFB, module, HaveDriverFuncs);
-		return (pointer)1;
+		return (void*)1;
 	} else {
 		if (errmaj != NULL)
 			*errmaj = LDR_ONCEONLY;
@@ -300,12 +299,12 @@ wsfb_open(const char *dev)
 }
 
 /* Map the framebuffer's memory. */
-static pointer
+static void*
 wsfb_mmap(size_t len, off_t off, int fd)
 {
 	int pagemask, mapsize;
 	caddr_t addr;
-	pointer mapaddr;
+	void *mapaddr;
 
 	pagemask = getpagesize() - 1;
 	mapsize = ((int) len + pagemask) & ~pagemask;
@@ -316,10 +315,10 @@ wsfb_mmap(size_t len, off_t off, int fd)
 	 * interloper, e.g. another server, can't get this frame buffer,
 	 * and if another server already has it, this one won't.
 	 */
-	mapaddr = (pointer) mmap(addr, mapsize,
+	mapaddr = mmap(addr, mapsize,
 				 PROT_READ | PROT_WRITE, MAP_SHARED,
 				 fd, off);
-	if (mapaddr == (pointer) -1) {
+	if (mapaddr == (void*) -1) {
 		mapaddr = NULL;
 	}
 #if DEBUG
@@ -1310,8 +1309,7 @@ WsfbDGAInit(ScrnInfoPtr pScrn, ScreenPtr pScreen)
 #endif
 
 static Bool
-WsfbDriverFunc(ScrnInfoPtr pScrn, xorgDriverFuncOp op,
-    pointer ptr)
+WsfbDriverFunc(ScrnInfoPtr pScrn, xorgDriverFuncOp op, void *ptr)
 {
 	xorgHWFlags *flag;
 
