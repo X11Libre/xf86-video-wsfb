@@ -55,11 +55,6 @@ AC_ARG_WITH(xorg-module-dir,
 
 PKG_CHECK_MODULES(XORG, [xorg-server >= 25.0.0 xproto])
 
-# Checks for libraries.
-
-# Checks for header files.
-AC_HEADER_STDC
-
 AC_SUBST([moduledir])
 
 AC_CONFIG_FILES([Makefile src/Makefile man/Makefile])
