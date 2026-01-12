@@ -47,15 +47,10 @@ AH_TOP([#include "xorg-server.h"])
 
 # Define a configure option for an alternate module directory
 PKG_PROG_PKG_CONFIG([0.25])
-AC_ARG_WITH(xorg-module-dir,
-            AS_HELP_STRING([--with-xorg-module-dir=DIR],
-                           [Default xorg module directory]),
-            [moduledir="$withval"],
-            [moduledir=`$PKG_CONFIG --variable=moduledir xorg-server`])
+PKG_CHECK_MODULES(XORG, [xorg-server >= 25.0.0.20 xproto])
 
-PKG_CHECK_MODULES(XORG, [xorg-server >= 25.0.0 xproto])
-
-AC_SUBST([moduledir])
+xlibre_video_drivers_dir=`$PKG_CONFIG --variable=video_drivers_dir xlibre-server`
+AC_SUBST([xlibre_video_drivers_dir])
 
 AC_CONFIG_FILES([Makefile src/Makefile man/Makefile])
 AC_OUTPUT
