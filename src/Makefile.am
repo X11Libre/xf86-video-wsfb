@@ -26,7 +26,7 @@
 AM_CFLAGS = $(XORG_CFLAGS) $(CWARNFLAGS)
 wsfb_drv_la_LTLIBRARIES = wsfb_drv.la
 wsfb_drv_la_LDFLAGS = -module -avoid-version
-wsfb_drv_ladir = @moduledir@/drivers
+wsfb_drv_ladir = @xlibre_video_drivers_dir@
 
 wsfb_drv_la_SOURCES = \
 	compat_api.h \
