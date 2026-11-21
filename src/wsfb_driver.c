@@ -151,6 +151,7 @@ static unsigned char *mapRGB16ToV = NULL;
 #define WSFB_VERSION_MAJOR	PACKAGE_VERSION_MAJOR
 #define WSFB_VERSION_MINOR	PACKAGE_VERSION_MINOR
 #define WSFB_VERSION_PATCH	PACKAGE_VERSION_PATCHLEVEL
+#define WSFB_VERSION_SUFFIX	PACKAGE_VERSION_SUFFIX
 
 _X_EXPORT DriverRec WSFB = {
 	WSFB_VERSION,
@@ -197,6 +198,10 @@ static XF86ModuleVersionInfo WsfbVersRec = {
 };
 
 _X_EXPORT XF86ModuleData wsfbModuleData = { &WsfbVersRec, WsfbSetup, NULL };
+
+#ifdef XF86_MODULE_VERSION_SUFFIX
+XF86_MODULE_VERSION_SUFFIX(wsfb, WSFB_VERSION_SUFFIX);
+#endif
 
 static void*
 WsfbSetup(void *module, void *opts, int *errmaj, int *errmin)
